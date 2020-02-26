@@ -1,6 +1,9 @@
 #pragma once
 #pragma pack(1)
 
+#include <memory>
+#include <vector>
+
 enum class WavHeaderType
 {
 	Invalid,
@@ -110,7 +113,6 @@ struct DataChunk
 	unsigned long ckSize;
 };
 
-
 //==============================Extensional Chunk===========================
 struct BextChunk
 {
@@ -147,12 +149,12 @@ struct JunkChunk
 struct RF64Chunk
 {
 	// Chunk ID = "RF64"
-	char ckID[4]; 
+	char ckID[4];
 	// -1 = 0xFFFFFFFF means dont use this data, use
 	// riffSizeHigh and riffSizeLow in ds64 chunk instead
 	unsigned long ckSize;
 	// Type ID = "WAVE"
-	char rf64Type[4]; 
+	char rf64Type[4];
 };
 
 struct CS64Chunk
@@ -182,7 +184,6 @@ struct PadChunk
 	unsigned long ckSize;
 };
 
-
 //==============================Wav Header=================================================
 struct IWavHeader
 {
@@ -193,7 +194,6 @@ struct IWavHeader
 };
 //RAII for IWavHeader
 //typedef std::shared_ptr<IWavHeader> p_IWavHeader;
-
 
 struct StandardWavHead : public IWavHeader
 {
@@ -224,7 +224,6 @@ struct ExtensibleWavHead : public IWavHeader
 	DataChunk DataChunk;
 };
 
-
 //struct ExtensibleNonPCMHead : public IWavHeader
 //{
 //	ExtensibleNonPCMHead() : IWavHeader(WavHeaderType::NonPCM) {}
@@ -234,7 +233,6 @@ struct ExtensibleWavHead : public IWavHeader
 //	FactChunk FactChunk;
 //	DataChunk DataChunk;
 //};
-
 
 struct ExtensibleNoFactHead : public IWavHeader
 {
@@ -294,30 +292,27 @@ struct int24
 
 struct WavFile
 {
-	WavFile() : Header(nullptr){}
+	WavFile() : Header(nullptr) {}
 
 	//Header
-	IWavHeader* Header;
+	IWavHeader *Header;
 
 	//Only Use One Type
 	std::vector<unsigned char> WavData;
-
 };
 //RAII for IWavParser
 typedef std::shared_ptr<WavFile> p_WavFile;
 
-
 //================================================================================
 /* Windows WAVE File Encoding Tags */
-#define WAVE_FORMAT_UNKNOWN			0x0000 /* Unknown Format */
-#define WAVE_FORMAT_PCM				0x0001 /* PCM */
-#define WAVE_FORMAT_ADPCM			0x0002 /* Microsoft ADPCM Format */
-#define WAVE_FORMAT_IEEE_FLOAT		0x0003 /* IEEE Float */
-#define WAVE_FORMAT_ALAW			0x0006 /* ALAW */
-#define WAVE_FORMAT_MULAW			0x0007 /* MULAW */
-#define WAVE_FORMAT_EXTENSIBLE		0xFFFE /* SubFormat */
-#define WAVE_FORMAT_DEVELOPMENT     0xFFFF /* Development */
-
+#define WAVE_FORMAT_UNKNOWN 0x0000	 /* Unknown Format */
+#define WAVE_FORMAT_PCM 0x0001		   /* PCM */
+#define WAVE_FORMAT_ADPCM 0x0002	   /* Microsoft ADPCM Format */
+#define WAVE_FORMAT_IEEE_FLOAT 0x0003  /* IEEE Float */
+#define WAVE_FORMAT_ALAW 0x0006		   /* ALAW */
+#define WAVE_FORMAT_MULAW 0x0007	   /* MULAW */
+#define WAVE_FORMAT_EXTENSIBLE 0xFFFE  /* SubFormat */
+#define WAVE_FORMAT_DEVELOPMENT 0xFFFF /* Development */
 
 //================================================================================
 enum class TestFileType

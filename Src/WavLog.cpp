@@ -1,16 +1,14 @@
-#include "WavLog.h"
-#include "WavUtility.h"
+#include "../Inc/WavLog.h"
+#include "../Inc/WavUtility.h"
 
-
-
-void WavParserHelper::PrintLog(const std::string& rhs, std::ostream& out_Stream)
+void WavParserHelper::PrintLog(const std::string &rhs, std::ostream &out_Stream)
 {
 	/*std::ofstream out_File("123.txt", std::ios_base::app);*/
 	out_Stream << rhs << std::endl;
 	/*out_File << rhs << std::endl;*/
 }
 
-void WavParserHelper::PrintChar(const char* ch, size_t size)
+void WavParserHelper::PrintChar(const char *ch, size_t size)
 {
 	for (int i = 0; i < size; i++)
 	{
@@ -19,23 +17,23 @@ void WavParserHelper::PrintChar(const char* ch, size_t size)
 	std::cout << std::endl;
 }
 
-void WavParserHelper::PrintWavHeaderType(IWavHeader* wavHeader)
+void WavParserHelper::PrintWavHeaderType(IWavHeader *wavHeader)
 {
 	switch (wavHeader->type)
 	{
-		case WavHeaderType::Standard:
+	case WavHeaderType::Standard:
 
-			WavParserHelper::PrintLog("Standard Wav Header");
-			break;
+		WavParserHelper::PrintLog("Standard Wav Header");
+		break;
 
-		case WavHeaderType::NonPCM:
+	case WavHeaderType::NonPCM:
 
-			WavParserHelper::PrintLog("NonPCM Wav Header");
-			break;
+		WavParserHelper::PrintLog("NonPCM Wav Header");
+		break;
 
-		case WavHeaderType::Extensible:
-			WavParserHelper::PrintLog("Extensible Wav Header");
-			break;
+	case WavHeaderType::Extensible:
+		WavParserHelper::PrintLog("Extensible Wav Header");
+		break;
 	}
 }
 
@@ -68,9 +66,7 @@ void WavParserHelper::PrintDataType(WavDataType DataType)
 	return;
 }
 
-
-
-void WavParserHelper::PrintWavHeader(IWavHeader* wavHeader, WavHeaderSubType SubType)
+void WavParserHelper::PrintWavHeader(IWavHeader *wavHeader, WavHeaderSubType SubType)
 {
 #ifdef DEBUG
 	std::cout << std::endl;
@@ -78,35 +74,35 @@ void WavParserHelper::PrintWavHeader(IWavHeader* wavHeader, WavHeaderSubType Sub
 
 	switch (wavHeader->type)
 	{
-		case WavHeaderType::Standard: 
-			PrintStandardWavHeader(dynamic_cast<StandardWavHead*>(wavHeader)); 
-			break;
+	case WavHeaderType::Standard:
+		PrintStandardWavHeader(dynamic_cast<StandardWavHead *>(wavHeader));
+		break;
 
-		case WavHeaderType::Bwf:
-			if(SubType == WavHeaderSubType::Normal)
-				PrintStandardBwfHeader(dynamic_cast<StandardBWFHead*>(wavHeader));
-			else if(SubType == WavHeaderSubType::Extensible)
-				PrintExtensibleBwfHeader(dynamic_cast<ExtensibleBWFHead*>(wavHeader));
-			else if(SubType == WavHeaderSubType::RF64)
-				PrintRF64Header(dynamic_cast<RF64Header*>(wavHeader));
-			break;
+	case WavHeaderType::Bwf:
+		if (SubType == WavHeaderSubType::Normal)
+			PrintStandardBwfHeader(dynamic_cast<StandardBWFHead *>(wavHeader));
+		else if (SubType == WavHeaderSubType::Extensible)
+			PrintExtensibleBwfHeader(dynamic_cast<ExtensibleBWFHead *>(wavHeader));
+		else if (SubType == WavHeaderSubType::RF64)
+			PrintRF64Header(dynamic_cast<RF64Header *>(wavHeader));
+		break;
 
-		case WavHeaderType::NonPCM: 
-			if (SubType == WavHeaderSubType::Normal)
-				PrintNonPcmWavHeader(dynamic_cast<NonPcmHead*>(wavHeader));
-			//else if (SubType == WavHeaderSubType::Extensible)
-			//	PrintExtensibleNonPcmWavHeader(dynamic_cast<ExtensibleNonPCMHead*>(wavHeader));
-			break;
+	case WavHeaderType::NonPCM:
+		if (SubType == WavHeaderSubType::Normal)
+			PrintNonPcmWavHeader(dynamic_cast<NonPcmHead *>(wavHeader));
+		//else if (SubType == WavHeaderSubType::Extensible)
+		//	PrintExtensibleNonPcmWavHeader(dynamic_cast<ExtensibleNonPCMHead*>(wavHeader));
+		break;
 
-		case WavHeaderType::Extensible:
-			if (SubType == WavHeaderSubType::Normal)
-				PrintExtensibleWavHeader(dynamic_cast<ExtensibleWavHead*>(wavHeader));
-			else if (SubType == WavHeaderSubType::NoFact)
-				PrintExtensibleNoFactWavHeader(dynamic_cast<ExtensibleNoFactHead*>(wavHeader));
-			break;
+	case WavHeaderType::Extensible:
+		if (SubType == WavHeaderSubType::Normal)
+			PrintExtensibleWavHeader(dynamic_cast<ExtensibleWavHead *>(wavHeader));
+		else if (SubType == WavHeaderSubType::NoFact)
+			PrintExtensibleNoFactWavHeader(dynamic_cast<ExtensibleNoFactHead *>(wavHeader));
+		break;
 
-		default:
-			break;
+	default:
+		break;
 	}
 
 #ifdef DEBUG
@@ -134,7 +130,7 @@ void WavParserHelper::PrintStandardFmtChunk(StandardPCMFmtChunk rhs)
 	//if not restrict size, there problem on \0 with char convert to string
 	std::string FMT(rhs.ckID);
 	FMT.resize(4);
-	
+
 	PrintLog("ChunkID: " + FMT);
 	PrintLog("ChunkSize: " + std::to_string(rhs.ckSize));
 	PrintLog("AudioFormat: " + WavParserHelper::GetAudioFormatTag(rhs.wFormatTag));
@@ -145,7 +141,6 @@ void WavParserHelper::PrintStandardFmtChunk(StandardPCMFmtChunk rhs)
 	PrintLog("bitsPerSample: " + std::to_string(rhs.wBitsPerSample));
 
 	std::cout << std::endl;
-
 }
 
 void WavParserHelper::PrintNonPcmFmtChunk(NonPcmFmtChunk rhs)
@@ -165,7 +160,6 @@ void WavParserHelper::PrintNonPcmFmtChunk(NonPcmFmtChunk rhs)
 	//PrintLog("ExtensionSize: " + std::to_string(rhs.cbSize));
 
 	std::cout << std::endl;
-
 }
 
 void WavParserHelper::PrintExtensibleFmtChunk(ExtensibleFmtChunk rhs)
@@ -190,7 +184,6 @@ void WavParserHelper::PrintExtensibleFmtChunk(ExtensibleFmtChunk rhs)
 	PrintLog("SubFormat: " + SubFormat);
 
 	std::cout << std::endl;
-
 }
 
 void WavParserHelper::PrintFactChunk(FactChunk rhs)
@@ -204,7 +197,6 @@ void WavParserHelper::PrintFactChunk(FactChunk rhs)
 	PrintLog("SampleLength: " + std::to_string(rhs.dwSampleLength));
 
 	std::cout << std::endl;
-
 }
 
 void WavParserHelper::PrintBextChunk(BextChunk rhs)
@@ -246,7 +238,7 @@ void WavParserHelper::PrintJunkChunk(JunkChunk rhs)
 {
 	std::string ckID(rhs.ckID);
 	ckID.resize(4);
-	
+
 	PrintLog("ChunkID: " + ckID);
 	PrintLog("ChunkSize: " + std::to_string(rhs.ckSize));
 	std::cout << std::endl;
@@ -296,11 +288,9 @@ void WavParserHelper::PrintCS64Chunk(CS64Chunk rhs, int Index)
 	PrintLog("ChunkSizeHigh: " + std::to_string(rhs.ckSizeHigh));
 
 	std::cout << std::endl;
-
 }
 
-
-void WavParserHelper::PrintTableChunk(std::vector<CS64Chunk>& rhs)
+void WavParserHelper::PrintTableChunk(std::vector<CS64Chunk> &rhs)
 {
 	int Count = 1;
 	for (auto Chunk : rhs)
@@ -309,10 +299,7 @@ void WavParserHelper::PrintTableChunk(std::vector<CS64Chunk>& rhs)
 	}
 
 	std::cout << std::endl;
-
 }
-
-
 
 void WavParserHelper::PrintDataChunk(DataChunk rhs)
 {
@@ -320,21 +307,20 @@ void WavParserHelper::PrintDataChunk(DataChunk rhs)
 	std::string Data(rhs.ckID);
 	Data.resize(4);
 
-	PrintLog("ChunkID: " + Data);									
+	PrintLog("ChunkID: " + Data);
 	PrintLog("ChunkSize: " + std::to_string(rhs.ckSize));
 
 	std::cout << std::endl;
-
 }
 
-void WavParserHelper::PrintStandardWavHeader(StandardWavHead* wavHeader)
+void WavParserHelper::PrintStandardWavHeader(StandardWavHead *wavHeader)
 {
 	PrintRIFFChunk(wavHeader->RIFFChunk);
 	PrintStandardFmtChunk(wavHeader->fmtChunk);
 	PrintDataChunk(wavHeader->DataChunk);
 }
 
-void WavParserHelper::PrintStandardBwfHeader(StandardBWFHead* wavHeader)
+void WavParserHelper::PrintStandardBwfHeader(StandardBWFHead *wavHeader)
 {
 	PrintRIFFChunk(wavHeader->RIFFChunk);
 	PrintStandardFmtChunk(wavHeader->fmtChunk);
@@ -343,7 +329,7 @@ void WavParserHelper::PrintStandardBwfHeader(StandardBWFHead* wavHeader)
 	PrintDataChunk(wavHeader->DataChunk);
 }
 
-void WavParserHelper::PrintNonPcmWavHeader(NonPcmHead* wavHeader)
+void WavParserHelper::PrintNonPcmWavHeader(NonPcmHead *wavHeader)
 {
 	PrintRIFFChunk(wavHeader->RIFFChunk);
 	PrintNonPcmFmtChunk(wavHeader->fmtChunk);
@@ -359,8 +345,7 @@ void WavParserHelper::PrintNonPcmWavHeader(NonPcmHead* wavHeader)
 //	PrintDataChunk(wavHeader->DataChunk);
 //}
 
-
-void WavParserHelper::PrintExtensibleWavHeader(ExtensibleWavHead* wavHeader)
+void WavParserHelper::PrintExtensibleWavHeader(ExtensibleWavHead *wavHeader)
 {
 	PrintRIFFChunk(wavHeader->RIFFChunk);
 	PrintExtensibleFmtChunk(wavHeader->fmtChunk);
@@ -368,15 +353,14 @@ void WavParserHelper::PrintExtensibleWavHeader(ExtensibleWavHead* wavHeader)
 	PrintDataChunk(wavHeader->DataChunk);
 }
 
-void WavParserHelper::PrintExtensibleNoFactWavHeader(ExtensibleNoFactHead* wavHeader)
+void WavParserHelper::PrintExtensibleNoFactWavHeader(ExtensibleNoFactHead *wavHeader)
 {
 	PrintRIFFChunk(wavHeader->RIFFChunk);
 	PrintExtensibleFmtChunk(wavHeader->fmtChunk);
 	PrintDataChunk(wavHeader->DataChunk);
 }
 
-
-void WavParserHelper::PrintExtensibleBwfHeader(ExtensibleBWFHead * wavHeader)
+void WavParserHelper::PrintExtensibleBwfHeader(ExtensibleBWFHead *wavHeader)
 {
 	PrintRIFFChunk(wavHeader->RIFFChunk);
 	PrintExtensibleFmtChunk(wavHeader->fmtChunk);
@@ -385,7 +369,7 @@ void WavParserHelper::PrintExtensibleBwfHeader(ExtensibleBWFHead * wavHeader)
 	PrintDataChunk(wavHeader->DataChunk);
 }
 
-void WavParserHelper::PrintRF64Header(RF64Header* wavHeader)
+void WavParserHelper::PrintRF64Header(RF64Header *wavHeader)
 {
 	PrintRF64Chunk(wavHeader->RF64Chunk);
 	PrintDS64Chunk(wavHeader->DS64Chunk);
@@ -394,4 +378,3 @@ void WavParserHelper::PrintRF64Header(RF64Header* wavHeader)
 	//PrintJunkChunk(wavHeader->JunkChunk);
 	PrintDataChunk(wavHeader->DataChunk);
 }
-

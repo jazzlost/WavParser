@@ -1,14 +1,11 @@
 ﻿#include <iostream>
 #include <string>
-#include "WavParser.h"
-#include "WavUtility.h"
-
-
+#include "../Inc/WavParser.h"
+#include "../Inc/WavUtility.h"
 
 int main()
 {
 	std::string Path = WavParserHelper::GetTestFilePath(TestFileType::Int16Stereo);
-
 
 	auto MyParser = new WavParser();
 
@@ -16,7 +13,7 @@ int main()
 	{
 		MyParser->Parse();
 	}
-	
+
 	std::cin.get();
 
 	delete MyParser;

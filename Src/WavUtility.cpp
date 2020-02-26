@@ -1,7 +1,7 @@
-#include "WavUtility.h"
+#include "../Inc/WavUtility.h"
+#include <cstring>
 
-
-WavDataType WavParserHelper::GetWavDataType(std::ifstream& in_File)
+WavDataType WavParserHelper::GetWavDataType(std::ifstream &in_File)
 {
 	if (in_File)
 	{
@@ -11,18 +11,18 @@ WavDataType WavParserHelper::GetWavDataType(std::ifstream& in_File)
 		char ckID[4];
 		in_File.read(ckID, sizeof(ckID));
 
-		if (!strncmp(ckID, "RIFF", 4))
+		if (!std::strncmp(ckID, "RIFF", 4))
 		{
 			in_File.seekg(34, std::ios_base::beg);
-			in_File.read(reinterpret_cast<char*>(&wavDataType), sizeof(wavDataType));
+			in_File.read(reinterpret_cast<char *>(&wavDataType), sizeof(wavDataType));
 		}
-		else if (!strncmp(ckID, "RF64", 4))
+		else if (!std::strncmp(ckID, "RF64", 4))
 		{
 			long ckSize;
 			in_File.seekg(16, std::ios_base::beg);
-			in_File.read(reinterpret_cast<char*>(&ckSize), sizeof(ckSize));
+			in_File.read(reinterpret_cast<char *>(&ckSize), sizeof(ckSize));
 			in_File.seekg(ckSize + 22, std::ios_base::cur);
-			in_File.read(reinterpret_cast<char*>(&wavDataType), sizeof(wavDataType));
+			in_File.read(reinterpret_cast<char *>(&wavDataType), sizeof(wavDataType));
 		}
 
 		switch (wavDataType)
@@ -53,8 +53,7 @@ WavDataType WavParserHelper::GetWavDataType(std::ifstream& in_File)
 	return WavDataType::Invalid;
 }
 
-
-WavHeaderTypeGroup WavParserHelper::GetWavHeaderType(std::ifstream& in_File)
+WavHeaderTypeGroup WavParserHelper::GetWavHeaderType(std::ifstream &in_File)
 {
 	WavHeaderTypeGroup HeaderTypeGroup;
 
@@ -63,10 +62,10 @@ WavHeaderTypeGroup WavParserHelper::GetWavHeaderType(std::ifstream& in_File)
 
 		long wavHeaderType;
 		in_File.seekg(16, std::ios_base::beg);
-		in_File.read(reinterpret_cast<char*>(&wavHeaderType), sizeof(wavHeaderType));
+		in_File.read(reinterpret_cast<char *>(&wavHeaderType), sizeof(wavHeaderType));
 
 		short wavHeaderSubType;
-		in_File.read(reinterpret_cast<char*>(&wavHeaderSubType), sizeof(wavHeaderSubType));
+		in_File.read(reinterpret_cast<char *>(&wavHeaderSubType), sizeof(wavHeaderSubType));
 
 		//Three Big Type : PCM / Non-PCM / Extensible
 		if (wavHeaderType == 16)
@@ -76,12 +75,12 @@ WavHeaderTypeGroup WavParserHelper::GetWavHeaderType(std::ifstream& in_File)
 			in_File.read(ckID, sizeof(ckID));
 
 			//Standard PCM
-			if (!strncmp(ckID, "data", 4))
+			if (!std::strncmp(ckID, "data", 4))
 			{
 				HeaderTypeGroup.MajorType = WavHeaderType::Standard;
 			}
 			//StandardBWF
-			else if (!strncmp(ckID, "bext", 4))
+			else if (!std::strncmp(ckID, "bext", 4))
 			{
 				HeaderTypeGroup.MajorType = WavHeaderType::Bwf;
 
@@ -99,7 +98,7 @@ WavHeaderTypeGroup WavParserHelper::GetWavHeaderType(std::ifstream& in_File)
 			in_File.seekg(38, std::ios_base::beg);
 			char ckID[4];
 			in_File.read(ckID, sizeof(ckID));
-			if (!strncmp(ckID, "fact", 4))
+			if (!std::strncmp(ckID, "fact", 4))
 				HeaderTypeGroup.SubType = WavHeaderSubType::Normal;
 		}
 		else if (wavHeaderType == 28)
@@ -110,7 +109,7 @@ WavHeaderTypeGroup WavParserHelper::GetWavHeaderType(std::ifstream& in_File)
 			char ckID[4];
 			in_File.read(ckID, sizeof(ckID));
 
-			if (!strncmp(ckID, "RF64", 4))
+			if (!std::strncmp(ckID, "RF64", 4))
 				HeaderTypeGroup.SubType = WavHeaderSubType::RF64;
 			else
 				HeaderTypeGroup.SubType = WavHeaderSubType::Normal;
@@ -120,7 +119,7 @@ WavHeaderTypeGroup WavParserHelper::GetWavHeaderType(std::ifstream& in_File)
 			in_File.seekg(36, std::ios_base::beg);
 			char ckID[4];
 			in_File.read(ckID, sizeof(ckID));
-			if (!strncmp(ckID, "data", 4) || !strncmp(ckID, "bext", 4))
+			if (!std::strncmp(ckID, "data", 4) || !std::strncmp(ckID, "bext", 4))
 			{
 				HeaderTypeGroup.MajorType = WavHeaderType::Bwf;
 			}
@@ -131,7 +130,7 @@ WavHeaderTypeGroup WavParserHelper::GetWavHeaderType(std::ifstream& in_File)
 				in_File.seekg(60, std::ios_base::beg);
 				char ckID[4];
 				in_File.read(ckID, sizeof(ckID));
-				if (!strncmp(ckID, "fact", 4))
+				if (!std::strncmp(ckID, "fact", 4))
 					HeaderTypeGroup.SubType = WavHeaderSubType::Normal;
 				else
 					HeaderTypeGroup.SubType = WavHeaderSubType::NoFact;
@@ -152,14 +151,14 @@ WavHeaderTypeGroup WavParserHelper::GetWavHeaderType(std::ifstream& in_File)
 //============================================================================
 void WavParserHelper::PrintHeaderMemory()
 {
-	IWavHeader* wavHeader = new IWavHeader(WavHeaderType::Standard);
+	IWavHeader *wavHeader = new IWavHeader(WavHeaderType::Standard);
 	/*StandardWavHead* standardHeader = new StandardWavHead();*/
-	StandardBWFHead* standardBWFHeader = new StandardBWFHead();
-	RIFFChunk* riffChunk = new RIFFChunk();
-	StandardPCMFmtChunk* standardPCMFmtChunk = new StandardPCMFmtChunk();
+	StandardBWFHead *standardBWFHeader = new StandardBWFHead();
+	RIFFChunk *riffChunk = new RIFFChunk();
+	StandardPCMFmtChunk *standardPCMFmtChunk = new StandardPCMFmtChunk();
 	//BextChunk* bextChunk = new BextChunk();
-	JunkChunk* junkChunk = new JunkChunk();
-	DataChunk* dataChunk = new DataChunk();
+	JunkChunk *junkChunk = new JunkChunk();
+	DataChunk *dataChunk = new DataChunk();
 
 	std::cout << "IWavHeader: " << sizeof(*wavHeader) << std::endl;
 	std::cout << "StandardBWFHeader: " << sizeof(*standardBWFHeader) << std::endl;
@@ -172,7 +171,7 @@ void WavParserHelper::PrintHeaderMemory()
 
 std::string WavParserHelper::GetTestFilePath(TestFileType FileType)
 {
-	std::string BasePath = "../WaveParser/Resource/";
+	std::string BasePath = "../../Resource/";
 	std::string FileName;
 	std::string FilePath;
 	switch (FileType)
@@ -251,7 +250,6 @@ std::string WavParserHelper::GetTestFilePath(TestFileType FileType)
 
 	return FilePath;
 }
-
 
 std::string WavParserHelper::GetAudioFormatTag(unsigned short wFormatTag)
 {
